@@ -15,27 +15,32 @@
     <h1>Todos App</h1>
     <div class="row">
         <div class="col-3">
-            <form method="post" action="{% url 'create todo' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    {{ todo_form.title.label_tag }}
-                    <input type="text"
-                           name="{{ todo_form.title.html_name }}"
-                           class="form-control"
-                           id="{{ todo_form.title.id_for_label }}"
-                           aria-describedby="title_help"
-                           value="{{ todo_form.title.value }}"/>
-                    <small id="title_help" class="form-text text-muted">Enter todo's title</small>
-                </div>
+            {% if pk %}
+                <form method="post" action="{% url form_action pk %}">
+            {% else %}
+                <form method="post" action="{% url form_action %}">
+            {% endif %}
+            {% csrf_token %}
+            <div class="form-group">
+                {{ todo_form.title.label_tag }}
+                <input type="text"
+                       name="{{ todo_form.title.html_name }}"
+                       class="form-control"
+                       id="{{ todo_form.title.id_for_label }}"
+                       aria-describedby="title_help"
+                       value="{{ todo_form.title.value }}"/>
+                <small id="title_help" class="form-text text-muted">Enter todo's title</small>
+            </div>
 
-                <div class="form-group">
-                    {{ todo_form.description.label_tag }}
-                    <textarea name="{{ todo_form.description.html_name }}"
-                              class="form-control"
-                              id="{{ todo_form.description.id_for_label }}"
-                              aria-describedby="description_help">{{ todo_form.description.value }}</textarea>
-                </div>
-                <button class="btn btn-danger">Create</button>
+            <div class="form-group">
+                {{ todo_form.description.label_tag }}
+                <textarea name="{{ todo_form.description.html_name }}"
+                          class="form-control"
+                          id="{{ todo_form.description.id_for_label }}"
+                          aria-describedby="description_help">{{ todo_form.description.value }}</textarea>
+            </div>
+            {{ todo_form.bot_catcher }}
+            <button class="btn btn-danger">Create</button>
             </form>
         </div>
         <div class="col-9">
@@ -48,11 +53,17 @@
                         <p class="todo-description collapsable">
                             {{ todo.description }}
                         </p>
-                        {% if todo.is_done %}
-                            <p class="green-text">Done</p>
-                        {% else %}
-                            <p class="red-text">Not done</p>
-                        {% endif %}
+                        <form method="post" action="{% url 'mark todo done' todo.id %}">
+                            {% csrf_token %}
+                            <button>
+                                {% if todo.is_done %}
+                                    <p class="green-text">Done</p>
+                                {% else %}
+                                    <p class="red-text">Not done</p>
+                                {% endif %}
+                            </button>
+                        </form>
+                        <a href="{% url 'edit todo' todo.id %}">Edit</a>
                     </li>
                 {% endfor %}
             </ul>
