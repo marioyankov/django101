@@ -38,7 +38,7 @@ def edit_todo(request, pk):
     todo = Todo.objects.get(pk=pk)
 
     if request.method == 'GET':
-        form = TodoForm(initial=todo.__dict__)
+        form = TodoForm(instance=todo)
         return index(request, form, 'edit todo', pk=pk)
     else:
         form = TodoForm(request.POST)

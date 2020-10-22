@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django102',
     'todos_app',
     'books',
+    'testing',
 ]
 
 MIDDLEWARE = [
